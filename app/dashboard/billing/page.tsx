@@ -29,10 +29,15 @@ async function getData(userId:string){
     })
     return data
 }
-const page =async () => {
+const Billing =async () => {
     const {getUser}=getKindeServerSession();
     const user=await getUser()
-    console.log(user.email)
+    if (!user || !user.id || !user.email) {
+        return <div>Error: User not found</div>; 
+    }
+    if (!user.email) {
+        throw new Error("User email is not available")
+    }
     const data=await getData(user?.id as string);
     async function createSubscription(){
         "use server";
@@ -123,4 +128,4 @@ const page =async () => {
   )
 }
 
-export default page
+export default Billing

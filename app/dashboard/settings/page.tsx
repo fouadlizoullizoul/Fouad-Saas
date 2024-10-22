@@ -22,7 +22,7 @@ async function getData(userId:string){
     })
     return data
 }
-const page = async () => {
+const Settings = async () => {
     const {getUser}=getKindeServerSession()
     const user=await getUser()
     const data=await getData(user?.id as string)
@@ -101,4 +101,4 @@ const page = async () => {
   )
 }
 
-export default page
+export default Settings

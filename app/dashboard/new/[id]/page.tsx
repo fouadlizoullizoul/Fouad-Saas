@@ -33,6 +33,9 @@ const page = async ({params}:{params:{id:string}}) => {
     async function postData(formData:FormData){
         "use server"
         if(!user) throw new Error("you are not allowed")
+            if (!user.email || !user.id) {
+                throw new Error("User email is not available")
+            }
             const title=formData.get("title") as string;
             const description=formData.get("description") as string;
             await prisma.note.update({

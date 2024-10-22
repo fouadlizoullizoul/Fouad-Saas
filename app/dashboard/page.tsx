@@ -8,35 +8,51 @@ import { revalidatePath } from "next/cache";
 import {unstable_noStore as noStore} from 'next/cache'
 import { TrashDelete } from "../components/Submitbuttons";
 async function getData(userId: string) {
-  noStore()
+  noStore();
   const data = await prisma.user.findUnique({
-    where:{
-      id:userId,
+    where: {
+      id: userId,
     },
-    select:{
-      Notes:true,
-      Subscription:{
-        select:{
-          status:true,
-        }
-      }
-    }
-  })
+    select: {
+      Notes: {
+        select: {
+          title: true,
+          id: true,
+          descriptions: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+
+      Subscription: {
+        select: {
+          status: true,
+        },
+      },
+    },
+  });
+
   return data;
 }
-const page = async () => {
+const Dasboard = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-  const data = await getData(user.id);
-  async function deleteNote(formData:FormData){
-    "use server"
-    const noteId =formData.get("noteId") as string;
+  const data = await getData(user?.id as string);
+
+  async function deleteNote(formData: FormData) {
+    "use server";
+
+    const noteId = formData.get("noteId") as string;
+
     await prisma.note.delete({
-      where:{
-        id:noteId,
-      }
-    })
-    revalidatePath("/dashboard")
+      where: {
+        id: noteId,
+      },
+    });
+
+    revalidatePath("/dasboard");
   }
   return (
     <div className="grid items-start gap-y-8">
@@ -111,4 +127,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Dasboard;

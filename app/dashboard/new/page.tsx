@@ -10,12 +10,15 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import {unstable_noStore as noStore} from 'next/cache'
-const page = async() => {
+const New = async() => {
     noStore()
     const {getUser}=getKindeServerSession()
     const user=await getUser()
     if(!user){
         throw new Error("Not authenticated")
+    }
+    if (!user.email) {
+        throw new Error("User email is not available")
     }
     async function postData(formData:FormData){
         "use server"
@@ -65,4 +68,4 @@ const page = async() => {
   )
 }
 
-export default page
+export default New
